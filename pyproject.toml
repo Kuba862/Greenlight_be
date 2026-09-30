@@ -23,3 +23,8 @@ build-backend = "uv_build"
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+    "alembic>=1.16,<2",
+]

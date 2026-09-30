@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     db_name: str = "postgres"
     db_user: str = Field(min_length=1)
     db_password: SecretStr
+    db_migration_port: int = Field(default=5432, ge=1, le=65535)
 
 
 @lru_cache
