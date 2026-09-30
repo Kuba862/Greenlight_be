@@ -1,12 +1,19 @@
 from fastapi import FastAPI
+from .config import get_settings
 
-app = FastAPI()
+settings = get_settings()
 
-@app.get("/")
-def root():
-    return {"status": "ok"}
+app = FastAPI(
+    title=settings.app_name,
+    version="0.1.0",
+    description="API dojazdów komunikacją MPK w Krakowie.",
+)
+
+@app.get("/", tags=["health"])
+def root() -> dict[str, str]:
+    return { "status": "ok" }
 
 
-@app.get("/items/{item_id}")
-def get_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/health/live", tags=["health"])
+def health_live() -> dict[str, str]:
+    return { "status": "ok" }
