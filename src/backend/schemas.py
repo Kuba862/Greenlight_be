@@ -15,3 +15,17 @@ class StopPage(BaseModel):
     total: int
     limit: int
     offset: int
+
+class RouteOut(BaseModel):
+    source: Literal["T", "A"]
+    route_id: str
+    short_name: str
+    long_name: str
+    route_type: int
+
+
+class RoutePage(BaseModel):
+    items: list[RouteOut]
+    total: int
+    limit: int
+    offset: int
