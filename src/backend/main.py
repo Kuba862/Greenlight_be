@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from .config import get_settings
 from .database import engine
 from .routers.stops import router as stops_router
+from .routers.routes import router as routes_router
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -18,6 +19,7 @@ app = FastAPI(
 )
 
 app.include_router(stops_router)
+app.include_router(routes_router)
 
 @app.get("/", tags=["health"])
 def root() -> dict[str, str]:
