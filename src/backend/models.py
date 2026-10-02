@@ -1,4 +1,12 @@
-from sqlalchemy import CheckConstraint, Float, String, Text, Integer
+from sqlalchemy import (
+    CheckConstraint, 
+    Float, 
+    String, 
+    Text, 
+    Integer,
+    ForeignKeyConstraint,
+    Index,
+    )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 class Base(DeclarativeBase):
@@ -54,3 +62,35 @@ class Route(Base):
     short_name: Mapped[str] = mapped_column(Text, server_default="")
     long_name: Mapped[str] = mapped_column(Text, server_default="")
     route_type: Mapped[int] = mapped_column(Integer)
+
+class Trip(Base):
+    __tablename__ = "mpk_trips"
+
+    __table_args__ = (
+        CheckConstraint(
+            "source IN ('A', 'T')",
+            name="ck_mpk_trips_source"
+        ),
+        CheckConstraint(
+            "direction_id IS NULL OR direction_id IN (0, 1)",
+            name="ck_mpk_trips_direction",
+        ),
+        ForeignKeyConstraint(
+            ["source", "route_id"],
+            ["mpk_routes.source", "mpk_routes.route_id"],
+            name="fk_mpk_trips_route"
+        ),
+        Index(
+            "ix_mpk_trips_source_route_service",
+            "source",
+            "route_id",
+            "service_id"
+        ),
+    )
+
+    source: Mapped[str] = mapped_column(String(1), primary_key=True)
+    trip_id: Mapped[str] = mapped_column(Text, primary_key=True)
+    route_id: Mapped[str] = mapped_column(Text)
+    service_id: Mapped[str] = mapped_column(Text)
+    headsign: Mapped[str] = mapped_column(Text, server_default="")
+    direction_id: Mapped[int | None] = mapped_column(Integer)
