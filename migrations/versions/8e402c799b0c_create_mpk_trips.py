@@ -1,7 +1,7 @@
 """create mpk trips
 
 Revision ID: 8e402c799b0c
-Revises: 8e84b3437ce8
+Revises: 625b7d21a28a
 Create Date: 2026-10-02 08:35:03.036804
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = '8e402c799b0c'
-down_revision: Union[str, Sequence[str], None] = '8e84b3437ce8'
+down_revision: Union[str, Sequence[str], None] = '625b7d21a28a'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
