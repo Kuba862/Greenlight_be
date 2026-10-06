@@ -146,3 +146,63 @@ class CalendarDate(Base):
     service_date: Mapped[date] = mapped_column(Date, primary_key=True)
 
     exception_type: Mapped[int] = mapped_column(Integer)
+
+
+class StopTime(Base):
+    __tablename__ = "mpk_stop_times"
+
+    __table_args__ = (
+        CheckConstraint(
+            "source IN ('A', 'T')",
+            name="ck_mpk_stop_times_source",
+        ),
+        CheckConstraint(
+            "stop_sequence >= 0",
+            name="ck_mpk_stop_times_sequence",
+        ),
+        CheckConstraint(
+            "arrival_seconds >= 0",
+            name="ck_mpk_stop_times_arrival",
+        ),
+        CheckConstraint(
+            "departure_seconds >= 0",
+            name="ck_mpk_stop_times_departure",
+        ),
+        CheckConstraint(
+            "departure_seconds >= arrival_seconds",
+            name="ck_mpk_stop_time_order",
+        ),
+        CheckConstraint(
+            "pickup_type IN (0, 1, 2, 3)",
+            name="ck_mpk_stop_times_drop_off",
+        ),
+        CheckConstraint(
+            "timepoint IN (0, 1)",
+            name="ck_mpk_stop_times_timepoint",
+        ),
+        ForeignKeyConstraint(
+            ["source", "trip_id"],
+            ["mpk_trips.source", "mpk_trips.trip_id"],
+            name="fk_mpk_stop_times_stop",
+        ),
+        Index(
+            "ix_mpk_stop_times_stop_departure",
+            "source",
+            "stop_id",
+            "departure_seconds",
+        ),
+    )
+
+    source: Mapped[str] = mapped_column(String(1), primary_key=True)
+    trip_id: Mapped[str] = mapped_column(Text, primary_key=True)
+    stop_sequence: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+    stop_id: Mapped[str] = mapped_column(Text)
+
+    arrival_seconds: Mapped[int | None] = mapped_column(Integer)
+    departure_seconds: Mapped[int | None] = mapped_column(Integer)
+
+    stop_headsign: Mapped[str] = mapped_column(Text, server_default="")
+    pickup_type: Mapped[int] = mapped_column(Integer, server_default="0")
+    drop_off_type: Mapped[int] = mapped_column(Integer, server_default="0")
+    timepoint: Mapped[int] = mapped_column(Integer, server_default="1")
