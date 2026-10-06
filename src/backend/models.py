@@ -1,3 +1,5 @@
+from datetime import date 
+from sqlalchemy import Boolean, Date
 from sqlalchemy import (
     CheckConstraint, 
     Float, 
@@ -94,3 +96,53 @@ class Trip(Base):
     service_id: Mapped[str] = mapped_column(Text)
     headsign: Mapped[str] = mapped_column(Text, server_default="")
     direction_id: Mapped[int | None] = mapped_column(Integer)
+
+
+class ServiceCalendar(Base):
+    __tablename__ = "mpk_calendars"
+
+    __table_args__ = (
+        CheckConstraint(
+            "source IN ('A', 'T')",
+            name="ck_mpk_calendars_source",
+        ),
+        CheckConstraint(
+            "end_date >= start_date",
+            name="ck_mpk_calendars_date_range",
+        ),
+    )
+
+    source: Mapped[str] = mapped_column(String(1), primary_key=True)
+    service_id: Mapped[str] = mapped_column(Text, primary_key=True)
+
+    monday: Mapped[bool] = mapped_column(Boolean)
+    tuesday: Mapped[bool] = mapped_column(Boolean)
+    wednesday: Mapped[bool] = mapped_column(Boolean)
+    thursday: Mapped[bool] = mapped_column(Boolean)
+    friday: Mapped[bool] = mapped_column(Boolean)
+    saturday: Mapped[bool] = mapped_column(Boolean)
+    sunday: Mapped[bool] = mapped_column(Boolean)
+
+    start_date: Mapped[date] = mapped_column(Date)
+    end_date: Mapped[date] = mapped_column(Date)
+
+
+class CalendarDate(Base):
+    __tablename__ = "mpk_calendar_dates"
+
+    __table_args__ = (
+        CheckConstraint(
+            "source IN ('A', 'T')",
+            name="ck_mpk_calendar_dates_source",
+        ),
+        CheckConstraint(
+            "exception_type IN (1,2)",
+            name="ck_mpk_calendar_dates_type",
+        ),
+    )
+
+    source: Mapped[str] = mapped_column(String(1), primary_key=True)
+    service_id: Mapped[str] = mapped_column(Text, primary_key=True)
+    service_date: Mapped[date] = mapped_column(Date, primary_key=True)
+
+    exception_type: Mapped[int] = mapped_column(Integer)
